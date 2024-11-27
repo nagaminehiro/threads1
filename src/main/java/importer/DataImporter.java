@@ -1,28 +1,30 @@
 package importer;
 
-import database.Database;
-import model.Client;
-import model.Products;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
+import database.Database;
+import model.Client;
+import model.Products;
+
 public class DataImporter {
+
     private final Database database;
 
     public DataImporter(Database database) {
+        database.truncateTables();
         this.database = database;
     }
 
     public void importData(String filePath) throws IOException, SQLException {
-        try (InputStream fis = new FileInputStream(filePath);
-             JsonReader reader = Json.createReader(fis)) {
+        try (InputStream fis = new FileInputStream(filePath); JsonReader reader = Json.createReader(fis)) {
             JsonObject jsonObject = reader.readObject();
             JsonArray productsArray = jsonObject.getJsonArray("products");
             JsonArray clientsArray = jsonObject.getJsonArray("clients");
